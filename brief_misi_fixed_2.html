@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brief Misi PBB — Per Jenis Misi</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --biru:#0B2D6E;--biru-mid:#1A4BA8;--kuning:#FAC400;--kuning-pale:rgba(250,196,0,.12);
+  --putih:#fff;--abu:rgba(255,255,255,.55);--border:rgba(255,255,255,.10);--card:rgba(255,255,255,.04);
+  --r-sm:8px;--r-md:14px;--r-lg:20px;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--biru);color:var(--putih);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* LOADING */
+#ls{position:fixed;inset:0;background:var(--biru);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:100;transition:opacity .4s}
+.spin{width:40px;height:40px;border:3px solid rgba(250,196,0,.2);border-top-color:var(--kuning);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#ls p{color:var(--abu);font-size:14px}
+
+/* HERO */
+.hero{background:linear-gradient(180deg,#0d2656 0%,var(--biru) 100%);padding:2.5rem 1.5rem 0;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(250,196,0,.10) 0%,transparent 65%);pointer-events:none}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:1.5rem}
+.logo-mark{width:36px;height:36px;background:var(--kuning);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--biru)}
+.logo-text{font-size:15px;font-weight:700;color:var(--abu)}
+.badge-month{display:inline-flex;align-items:center;gap:6px;background:var(--kuning-pale);border:1px solid rgba(250,196,0,.3);color:var(--kuning);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:1.2rem}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--kuning);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(1.5rem,5vw,2rem);font-weight:800;line-height:1.2;margin-bottom:.6rem}
+.hero h1 span{color:var(--kuning)}
+.hero-sub{font-size:.9rem;color:var(--abu);margin-bottom:2rem}
+
+/* MISI TABS — scrollable on mobile */
+.misi-tabs-wrap{overflow-x:auto;padding-bottom:0;-webkit-overflow-scrolling:touch}
+.misi-tabs-wrap::-webkit-scrollbar{height:0}
+.misi-tabs{display:flex;gap:6px;min-width:max-content;padding:0 1rem;justify-content:flex-start}
+.misi-tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);padding:10px 16px;border-radius:30px 30px 0 0;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;border-bottom:none;position:relative;bottom:-1px;white-space:nowrap}
+.misi-tab:hover{background:rgba(250,196,0,.1);color:var(--kuning);border-color:rgba(250,196,0,.3)}
+.misi-tab.active{background:var(--biru);border-color:rgba(255,255,255,.12);border-bottom-color:var(--biru);color:var(--kuning)}
+.misi-tab.ti-tab.active{color:#CE93D8}
+.misi-tab.tambahan-tab.active{color:rgba(255,255,255,.8)}
+
+/* CONTENT */
+.content{max-width:740px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+#def{text-align:center;padding:4rem 2rem;color:rgba(255,255,255,.25);font-size:.9rem}
+#def .big{font-size:2.5rem;margin-bottom:1rem}
+
+/* MISI HEADER */
+.misi-hd{padding:1.5rem 0;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.misi-hd-top{display:flex;align-items:center;gap:14px;margin-bottom:.4rem}
+.misi-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.misi-title{font-size:1.2rem;font-weight:800}
+.misi-sub{font-size:.85rem;color:var(--abu);margin-left:66px}
+
+/* INFO CARD */
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin:1.75rem 0 .75rem}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1.1rem 1.4rem;margin-bottom:.75rem}
+.info-card.accent{background:rgba(250,196,0,.06);border-color:rgba(250,196,0,.2)}
+.info-card.ti-accent{background:rgba(123,31,162,.1);border-color:rgba(123,31,162,.3)}
+.ic-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.5rem}
+.ic-value{font-size:.875rem;color:rgba(255,255,255,.85);line-height:1.7;white-space:pre-wrap}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-sm);padding:.75rem 1rem}
+.info-cell .ic-label{margin-bottom:.35rem}
+.info-cell .ic-value{font-size:.85rem}
+.info-cell .ic-value.big{font-size:1.1rem;font-weight:800;color:var(--kuning)}
+
+/* HASHTAG */
+.hashtag-row{display:flex;flex-wrap:wrap;gap:8px}
+.htag{background:var(--kuning-pale);border:1px solid rgba(250,196,0,.28);color:var(--kuning);font-size:.82rem;font-weight:700;padding:7px 14px;border-radius:20px}
+
+/* KEY MSG */
+.km-list{display:flex;flex-direction:column;gap:8px}
+.km{background:var(--card);border-left:3px solid var(--kuning);border-radius:0 10px 10px 0;padding:10px 14px;font-size:.875rem;color:rgba(255,255,255,.8);line-height:1.65;white-space:pre-wrap}
+
+/* PLATFORM PILLS */
+.plat-row{display:flex;flex-wrap:wrap;gap:6px}
+.plat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:.8rem;font-weight:600;padding:5px 12px;border-radius:20px}
+
+/* FLASH SALE PERIODS */
+.periode-block{background:rgba(250,196,0,.07);border:1px solid rgba(250,196,0,.2);border-radius:var(--r-sm);padding:.9rem 1.1rem;margin-bottom:8px}
+.periode-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--kuning);margin-bottom:.5rem}
+.periode-dates{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.periode-target{font-size:.82rem;color:var(--abu);margin-bottom:.4rem}
+.periode-promo{font-size:.85rem;color:rgba(255,255,255,.8);line-height:1.6;white-space:pre-wrap}
+
+/* REWARD */
+.reward-box{background:linear-gradient(135deg,rgba(250,196,0,.12) 0%,rgba(250,196,0,.04) 100%);border:1px solid rgba(250,196,0,.25);border-radius:var(--r-md);padding:1.1rem 1.4rem;display:flex;align-items:center;gap:14px}
+.reward-emoji{font-size:2rem;flex-shrink:0}
+.reward-amount{font-size:1.5rem;font-weight:800;color:var(--kuning)}
+.reward-desc{font-size:.8rem;color:var(--abu);margin-top:2px;line-height:1.5}
+
+/* DEADLINE */
+.deadline-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:.9rem 1.2rem;margin-bottom:8px}
+.dl-label{font-size:.78rem;color:var(--abu)}
+.dl-date{font-size:1rem;font-weight:700}
+.dl-badge{background:rgba(255,100,100,.15);border:1px solid rgba(255,100,100,.3);color:#ff7070;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px}
+
+/* SYARAT */
+.syarat-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.syarat-list li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:rgba(255,255,255,.75);line-height:1.55}
+.syarat-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--kuning);flex-shrink:0;margin-top:8px}
+
+/* TI BADGE */
+.ti-banner{background:linear-gradient(90deg,rgba(123,31,162,.15),rgba(123,31,162,.05));border:1px solid rgba(123,31,162,.3);border-radius:var(--r-sm);padding:.7rem 1rem;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ti-banner-text{font-size:.85rem;font-weight:700;color:#CE93D8}
+
+.footer{text-align:center;padding:1.5rem;font-size:.78rem;color:rgba(255,255,255,.2);border-top:1px solid var(--border)}
+@media(max-width:480px){.misi-tab{padding:8px 12px;font-size:.77rem}.hero{padding:2rem 1rem 0}.content{padding:1.5rem 1rem 4rem}.info-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="ls"><div class="spin"></div><p>Memuat brief misi...</p></div>
+
+<div id="mc" style="display:none">
+<div class="hero">
+  <div class="logo-row"><div class="logo-mark">PBB</div><span class="logo-text">Komunitas Bukuagen</span></div>
+  <div class="badge-month"><span class="badge-dot"></span>Brief aktif · <span id="ml">—</span></div>
+  <h1>Brief Misi<br><span id="hb">bulan ini</span></h1>
+  <p class="hero-sub">Pilih jenis misi di bawah untuk lihat brief lengkapnya</p>
+  <div class="misi-tabs-wrap">
+    <div class="misi-tabs">
+      <button class="misi-tab" onclick="showMisi('wajib')" id="tab-wajib">⭐ Misi Wajib</button>
+      <button class="misi-tab" onclick="showMisi('flash_sale')" id="tab-flash_sale">⚡ Flash Sale</button>
+      <button class="misi-tab" onclick="showMisi('shopee_video')" id="tab-shopee_video">🛍️ ShopeeVIDEO</button>
+      <button class="misi-tab" onclick="showMisi('shopee_live')" id="tab-shopee_live">📺 ShopeeLIVE</button>
+      <button class="misi-tab ti-tab" onclick="showMisi('ti_svideo')" id="tab-ti_svideo">👑 TI ShopeeVIDEO</button>
+      <button class="misi-tab ti-tab" onclick="showMisi('ti_slive')" id="tab-ti_slive">👑 TI ShopeeLIVE</button>
+      <button class="misi-tab tambahan-tab" onclick="showMisi('tambahan_1')" id="tab-tambahan_1">➕ Tambahan 1</button>
+      <button class="misi-tab tambahan-tab" onclick="showMisi('tambahan_2')" id="tab-tambahan_2">➕ Tambahan 2</button>
+      <button class="misi-tab tambahan-tab" onclick="showMisi('tambahan_3')" id="tab-tambahan_3">➕ Tambahan 3</button>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div id="def"><div class="big">👆</div>Pilih jenis misi di atas untuk melihat brief lengkapnya</div>
+  <div class="panel" id="panel-wajib"></div>
+  <div class="panel" id="panel-flash_sale"></div>
+  <div class="panel" id="panel-shopee_video"></div>
+  <div class="panel" id="panel-shopee_live"></div>
+  <div class="panel" id="panel-ti_svideo"></div>
+  <div class="panel" id="panel-ti_slive"></div>
+  <div class="panel" id="panel-tambahan_1"></div>
+  <div class="panel" id="panel-tambahan_2"></div>
+  <div class="panel" id="panel-tambahan_3"></div>
+</div>
+
+<div class="footer">Komunitas PBB · BukuWarung · BukuAgen &nbsp;|&nbsp; Brief diperbarui otomatis setiap bulan</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  KONFIGURASI — edit bagian ini sesuai kebutuhan
+// ══════════════════════════════════════════════════
+const SHEET_ID = 'GANTI_DENGAN_SHEET_ID_KAMU';
+const API_KEY  = 'AIzaSyDD8sKuxxKqzyEqDLbIzlTqlFQsPQ2lc5U';
+
+// Nama tab sheet di Google Sheets kamu (case-sensitive, harus persis sama):
+const SHEET_PBB_MEMBER    = 'PBB Member';      // ← ganti jika nama tab berbeda
+const SHEET_TOP_INFLUENCER = 'TOP Influencer'; // ← ganti jika nama tab berbeda
+// ══════════════════════════════════════════════════
+
+// ── CARA DAPAT SHEET ID ──
+// Buka Google Sheets → lihat URL:
+// https://docs.google.com/spreadsheets/d/[INI_SHEET_ID_NYA]/edit
+// Copy bagian antara /d/ dan /edit (44 karakter)
+
+// ── LOGIKA 2 TAB ──
+// Web ini baca dari 2 tab sekaligus:
+//   → "PBB Member"    untuk misi wajib, flash sale, shopee, tambahan
+//   → "TOP Influencer" untuk misi khusus TI (ti_svideo & ti_slive)
+// Data dari kedua tab digabung otomatis. Kalau misi_key sama, data TOP Influencer
+// akan override data PBB Member untuk key yang sama.
+
+// Sheet columns: A=misi_key, B=bulan, C=nama_misi, D=tgl_mulai, E=tgl_selesai,
+//   F=target, G=sosmed, H=km(;sep), I=pesan_promo, J=komisi, K=komisi_desc,
+//   L=hashtag(;sep), M=deadline, N=syarat1..R=syarat5
+
+let misiData = {};
+
+function parseRows(rows) {
+  const result = {};
+  rows.slice(1).forEach(r => {
+    const key = (r[0]||'').toLowerCase().trim();
+    if (!key) return;
+    result[key] = {
+      bulan:       r[1]||'',
+      nama:        r[2]||'',
+      tgl_mulai:   r[3]||'',
+      tgl_selesai: r[4]||'',
+      target:      r[5]||'',
+      sosmed:      (r[6]||'').split(',').map(s=>s.trim()).filter(Boolean),
+      km:          (r[7]||'').split(';').map(s=>s.trim()).filter(Boolean),
+      pesan_promo: r[8]||'',
+      komisi:      r[9]||'',
+      komisi_desc: r[10]||'',
+      hashtags:    (r[11]||'').split(',').map(s=>s.trim()).filter(Boolean),
+      deadline:    r[12]||'',
+      syarat:      [r[13],r[14],r[15],r[16],r[17]].filter(Boolean),
+    };
+  });
+  return result;
+}
+
+async function fetchSheet(sheetName) {
+  const range = encodeURIComponent(`'${sheetName}'!A1:S200`);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}?key=${API_KEY}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Gagal baca tab "${sheetName}" (HTTP ${res.status})`);
+  const json = await res.json();
+  return json.values || [];
+}
+
+async function loadData() {
+  // Fetch kedua tab secara paralel (lebih cepat)
+  const [rowsPBB, rowsTI] = await Promise.all([
+    fetchSheet(SHEET_PBB_MEMBER),
+    fetchSheet(SHEET_TOP_INFLUENCER),
+  ]);
+
+  // Gabungkan: data PBB Member dulu, lalu TOP Influencer timpa/tambah
+  const dataPBB = parseRows(rowsPBB);
+  const dataTI  = parseRows(rowsTI);
+  misiData = { ...dataPBB, ...dataTI };
+}
+
+function infoGrid(items) {
+  return `<div class="info-grid">${items.map(([lbl,val,big])=>`
+    <div class="info-cell">
+      <div class="ic-label">${lbl}</div>
+      <div class="ic-value ${big?'big':''}">${val}</div>
+    </div>`).join('')}</div>`;
+}
+
+function buildWajib() {
+  const video = misiData['wajib_video'];
+  const live  = misiData['wajib_live'];
+  const d = video || live;
+  if (!d) return '<div style="padding:3rem;text-align:center;color:rgba(255,255,255,.3)">Data belum tersedia</div>';
+
+  const htags = (d.hashtags||[]).map(h=>`<span class="htag">${h.startsWith('#')?h:'#'+h}</span>`).join('');
+  const kmsVideo = (video?.km||[]).map(k=>`<div class="km">${k}</div>`).join('');
+  const kmsLive  = (live?.km||[]).map(k=>`<div class="km">${k}</div>`).join('');
+  const platVideo = (video?.sosmed||[]).map(p=>`<span class="plat">${p}</span>`).join('');
+  const platLive  = (live?.sosmed||[]).map(p=>`<span class="plat">${p}</span>`).join('');
+  const syaratHtml = (d.syarat||[]).map(s=>`<li>${s}</li>`).join('');
+
+  return `
+    <div class="misi-hd">
+      <div class="misi-hd-top">
+        <div class="misi-icon" style="background:rgba(11,45,110,.4);border:1px solid rgba(255,255,255,.1)">⭐</div>
+        <div class="misi-title">Misi Wajib</div>
+      </div>
+      <div class="misi-sub">Video Pendek + Live Streaming — Misi utama bulan ini</div>
+    </div>
+
+    ${d.tgl_mulai ? `<div class="sec-lbl">Periode</div>
+    <div class="info-card accent"><div class="ic-label">Tanggal Misi</div><div class="ic-value" style="font-weight:700;font-size:1.05rem;color:var(--kuning)">${d.tgl_mulai} – ${d.tgl_selesai}</div></div>` : ''}
+
+    <div class="sec-lbl">Target Misi</div>
+    ${infoGrid([
+      ['🎬 Target Video',video?.target||'—',false],
+      ['📡 Target Live',live?.target||'—',false],
+      ['💰 Komisi Video',video?.komisi||'—',false],
+      ['💰 Komisi Live',live?.komisi||'—',false],
+    ])}
+
+    ${platVideo ? `<div class="sec-lbl">Platform Upload</div>
+    <div><div class="ic-label" style="margin-bottom:.5rem">Video Pendek</div><div class="plat-row">${platVideo}</div></div>
+    ${platLive ? `<div style="margin-top:.6rem"><div class="ic-label" style="margin-bottom:.5rem">Live Streaming</div><div class="plat-row">${platLive}</div></div>` : ''}` : ''}
+
+    ${htags ? `<div class="sec-lbl">Hashtag Wajib</div><div class="hashtag-row">${htags}</div>` : ''}
+
+    ${kmsVideo ? `<div class="sec-lbl">Key Message — Video Pendek</div><div class="km-list">${kmsVideo}</div>` : ''}
+    ${kmsLive  ? `<div class="sec-lbl">Key Message — Live Streaming</div><div class="km-list">${kmsLive}</div>` : ''}
+
+    ${d.pesan_promo ? `<div class="sec-lbl">Pesan Promo</div><div class="info-card accent"><div class="ic-value">${d.pesan_promo}</div></div>` : ''}
+
+    <div class="sec-lbl">Reward & Komisi</div>
+    <div class="reward-box"><div class="reward-emoji">🏆</div><div>
+      <div class="reward-amount">${video?.komisi||''} ${live?.komisi?'+ '+live.komisi:''}</div>
+      <div class="reward-desc">${video?.komisi_desc||'Dibayarkan H+7 setelah deadline selesai'}</div>
+    </div></div>
+
+    ${d.deadline ? `<div class="sec-lbl">Deadline</div>
+    <div class="deadline-row"><div><div class="dl-label">Batas akhir upload</div><div class="dl-date">${d.deadline}</div></div><div class="dl-badge">DEADLINE</div></div>` : ''}
+
+    ${syaratHtml ? `<div class="sec-lbl">Syarat Submission</div>
+    <div class="info-card"><ul class="syarat-list">${syaratHtml}</ul></div>` : ''}
+  `;
+}
+
+function buildFlashSale() {
+  const p1 = misiData['flash_sale_1'];
+  const p2 = misiData['flash_sale_2'];
+  const p3 = misiData['flash_sale_3'];
+  const base = misiData['flash_sale'] || p1;
+  if (!base && !p1) return '<div style="padding:3rem;text-align:center;color:rgba(255,255,255,.3)">Data belum tersedia</div>';
+
+  const htags = (base?.hashtags||[]).map(h=>`<span class="htag">${h.startsWith('#')?h:'#'+h}</span>`).join('');
+  const kms   = (base?.km||[]).map(k=>`<div class="km">${k}</div>`).join('');
+  const plats = (base?.sosmed||[]).map(p=>`<span class="plat">${p}</span>`).join('');
+  const syaratHtml = (base?.syarat||[]).map(s=>`<li>${s}</li>`).join('');
+
+  const periods = [p1,p2,p3].filter(Boolean);
+  const periodLabels = ['Flash Sale Periode 1','Flash Sale Periode 2','Flash Sale Periode 3'];
+  const periodsHtml = periods.map((p,i)=>`
+    <div class="periode-block">
+      <div class="periode-label">📅 ${periodLabels[i]}</div>
+      <div class="periode-dates">${p.tgl_mulai||'?'} – ${p.tgl_selesai||'?'}</div>
+      ${p.target?`<div class="periode-target">Target: ${p.target}</div>`:''}
+      ${p.pesan_promo?`<div class="ic-label" style="margin:.4rem 0 .25rem">Pesan Promo</div><div class="periode-promo">${p.pesan_promo}</div>`:''}
+    </div>`).join('');
+
+  return `
+    <div class="misi-hd">
+      <div class="misi-hd-top">
+        <div class="misi-icon" style="background:rgba(255,150,0,.15);border:1px solid rgba(255,150,0,.2)">⚡</div>
+        <div class="misi-title">Misi Flash Sale</div>
+      </div>
+      <div class="misi-sub">Konten promo bertepatan dengan event Flash Sale Bukuagen</div>
+    </div>
+
+    ${periodsHtml ? `<div class="sec-lbl">Periode & Detail Flash Sale</div>${periodsHtml}` : ''}
+
+    ${base?.target ? `<div class="sec-lbl">Target per Periode</div>
+    <div class="info-card"><div class="ic-label">Target Video</div><div class="ic-value">${base.target}</div></div>` : ''}
+
+    ${plats ? `<div class="sec-lbl">Platform Upload</div><div class="plat-row">${plats}</div>` : ''}
+    ${htags ? `<div class="sec-lbl">Hashtag Wajib</div><div class="hashtag-row">${htags}</div>` : ''}
+    ${kms ? `<div class="sec-lbl">Key Message</div><div class="km-list">${kms}</div>` : ''}
+
+    ${base?.komisi ? `<div class="sec-lbl">Reward & Komisi</div>
+    <div class="reward-box"><div class="reward-emoji">🏆</div><div>
+      <div class="reward-amount">${base.komisi}</div>
+      <div class="reward-desc">${base.komisi_desc||'per video flash sale yang lolos kurasi'}</div>
+    </div></div>` : ''}
+
+    ${base?.deadline ? `<div class="sec-lbl">Deadline</div>
+    <div class="deadline-row"><div><div class="dl-label">Batas akhir</div><div class="dl-date">${base.deadline}</div></div><div class="dl-badge">DEADLINE</div></div>` : ''}
+
+    ${syaratHtml ? `<div class="sec-lbl">Syarat Submission</div>
+    <div class="info-card"><ul class="syarat-list">${syaratHtml}</ul></div>` : ''}
+  `;
+}
+
+function buildGeneric(key, icon, title, iconBg, isTI=false) {
+  const d = misiData[key];
+  if (!d) return '<div style="padding:3rem;text-align:center;color:rgba(255,255,255,.3)">Data belum tersedia</div>';
+
+  const htags = (d.hashtags||[]).map(h=>`<span class="htag">${h.startsWith('#')?h:'#'+h}</span>`).join('');
+  const kms   = (d.km||[]).map(k=>`<div class="km">${k}</div>`).join('');
+  const plats = (d.sosmed||[]).map(p=>`<span class="plat">${p}</span>`).join('');
+  const syaratHtml = (d.syarat||[]).map(s=>`<li>${s}</li>`).join('');
+
+  return `
+    <div class="misi-hd">
+      <div class="misi-hd-top">
+        <div class="misi-icon" style="background:${iconBg};border:1px solid rgba(255,255,255,.1)">${icon}</div>
+        <div class="misi-title">${title}</div>
+      </div>
+    </div>
+
+    ${isTI ? `<div class="ti-banner"><span style="font-size:1.2rem">👑</span><span class="ti-banner-text">Misi eksklusif untuk anggota TOP Influencer PBB</span></div>` : ''}
+
+    ${d.tgl_mulai ? `<div class="sec-lbl">Periode</div>
+    <div class="info-card accent"><div class="ic-label">Tanggal Misi</div><div class="ic-value" style="font-weight:700;font-size:1.05rem;color:var(--kuning)">${d.tgl_mulai} – ${d.tgl_selesai}</div></div>` : ''}
+
+    ${d.target ? `<div class="sec-lbl">Target Misi</div>
+    <div class="info-card ${isTI?'ti-accent':''}"><div class="ic-value">${d.target}</div></div>` : ''}
+
+    ${plats ? `<div class="sec-lbl">Platform Upload</div><div class="plat-row">${plats}</div>` : ''}
+    ${htags ? `<div class="sec-lbl">Hashtag Wajib</div><div class="hashtag-row">${htags}</div>` : ''}
+    ${kms   ? `<div class="sec-lbl">Key Message & Angle Konten</div><div class="km-list">${kms}</div>` : ''}
+
+    ${d.pesan_promo ? `<div class="sec-lbl">Pesan Promo</div>
+    <div class="info-card ${isTI?'ti-accent':'accent'}"><div class="ic-value">${d.pesan_promo}</div></div>` : ''}
+
+    ${d.komisi ? `<div class="sec-lbl">Reward & Komisi</div>
+    <div class="reward-box"><div class="reward-emoji">🏆</div><div>
+      <div class="reward-amount">${d.komisi}</div>
+      <div class="reward-desc">${d.komisi_desc||'per konten yang lolos kurasi tim KOL'}</div>
+    </div></div>` : ''}
+
+    ${d.deadline ? `<div class="sec-lbl">Deadline</div>
+    <div class="deadline-row"><div><div class="dl-label">Batas akhir upload</div><div class="dl-date">${d.deadline}</div></div><div class="dl-badge">DEADLINE</div></div>` : ''}
+
+    ${syaratHtml ? `<div class="sec-lbl">Syarat Submission</div>
+    <div class="info-card"><ul class="syarat-list">${syaratHtml}</ul></div>` : ''}
+  `;
+}
+
+const MISI_BUILDERS = {
+  wajib:       ()=>buildWajib(),
+  flash_sale:  ()=>buildFlashSale(),
+  shopee_video:()=>buildGeneric('shopee_video','🛍️','Misi Spesial ShopeeVIDEO','rgba(0,151,167,.2)'),
+  shopee_live: ()=>buildGeneric('shopee_live','📺','Misi Spesial ShopeeLIVE','rgba(0,151,167,.2)'),
+  ti_svideo:   ()=>buildGeneric('ti_svideo','👑','Misi Khusus TOP Influencer ShopeeVIDEO','rgba(123,31,162,.2)',true),
+  ti_slive:    ()=>buildGeneric('ti_slive','👑','Misi Khusus TOP Influencer ShopeeLIVE','rgba(123,31,162,.2)',true),
+  tambahan_1:  ()=>buildGeneric('tambahan_1','➕',misiData['tambahan_1']?.nama||'Misi Tambahan 1','rgba(84,110,122,.3)'),
+  tambahan_2:  ()=>buildGeneric('tambahan_2','➕',misiData['tambahan_2']?.nama||'Misi Tambahan 2','rgba(84,110,122,.3)'),
+  tambahan_3:  ()=>buildGeneric('tambahan_3','➕',misiData['tambahan_3']?.nama||'Misi Tambahan 3','rgba(84,110,122,.3)'),
+};
+
+function showMisi(key) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.misi-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('def').style.display='none';
+  const panel = document.getElementById('panel-'+key);
+  if (!panel.innerHTML && MISI_BUILDERS[key]) panel.innerHTML = MISI_BUILDERS[key]();
+  panel.classList.add('active');
+  document.getElementById('tab-'+key).classList.add('active');
+}
+
+function updateHero() {
+  const bulan = Object.values(misiData)[0]?.bulan || '';
+  if (bulan) {
+    document.getElementById('ml').textContent = bulan;
+    document.getElementById('hb').textContent = bulan;
+  }
+}
+
+async function init() {
+  try {
+    await loadData();
+    updateHero();
+    document.getElementById('ls').style.opacity='0';
+    setTimeout(()=>{
+      document.getElementById('ls').style.display='none';
+      document.getElementById('mc').style.display='block';
+    },400);
+  } catch(err){
+    // Diagnosa spesifik berdasarkan jenis error
+    let diagnosis = err.message;
+    let tips = '';
+    if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+      diagnosis = 'Tidak bisa terhubung ke Google Sheets';
+      tips = '⚠️ Jika kamu buka file ini langsung dari komputer (double-click), browser memblokir koneksi. File ini harus diupload ke Netlify/hosting dulu, baru bisa bekerja.';
+    } else if (err.message.includes('404')) {
+      diagnosis = 'Sheet ID tidak ditemukan (HTTP 404)';
+      tips = '→ Cek Sheet ID di baris KONFIGURASI, pastikan sudah benar dan lengkap (44 karakter).';
+    } else if (err.message.includes('403')) {
+      diagnosis = 'Akses ditolak (HTTP 403)';
+      tips = '→ Pastikan Google Sheets sudah di-set "Anyone with the link can view" dan API Key sudah aktifkan Google Sheets API.';
+    } else if (err.message.includes('400')) {
+      diagnosis = 'Nama sheet tidak ditemukan (HTTP 400)';
+      tips = '→ Pastikan di Google Sheets ada tab dengan nama persis "BriefMisi" (tanpa spasi, huruf kapital sesuai).';
+    }
+    document.getElementById('ls').innerHTML = `<div style="text-align:center;padding:2rem 1.5rem;color:white;max-width:420px;margin:0 auto">
+      <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
+      <div style="font-weight:700;font-size:1.1rem;margin-bottom:.5rem">Gagal memuat data</div>
+      <div style="font-size:13px;opacity:.75;margin-bottom:1rem;line-height:1.5">${diagnosis}</div>
+      ${tips ? `<div style="font-size:12px;opacity:.55;line-height:1.6;background:rgba(255,255,255,.07);border-radius:8px;padding:.75rem 1rem;text-align:left">${tips}</div>` : ''}
+    </div>`;
+  }
+}
+init();
+</script>
+</body>
+</html>
